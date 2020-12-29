@@ -26,6 +26,7 @@
 
 #include <algorithm>
 #include <cmath>
+#include <cstdlib>
 #include <exception>
 #include <iostream>
 #include <stdexcept>
@@ -584,6 +585,16 @@ void X11::changeDesktop(ActionDirection direction) const {
 
   this->sendEvent(rootWindow, rootWindow, "_NET_CURRENT_DESKTOP",
                   {static_cast<unsigned long>(toDesktop)});  // NOLINT
+  std::cout << "Going to desktop" << toDesktop << std::endl;
+
+  // TODO: unless upstream awesomeWM supports _NET_CURRENT_DESKTOP we use this
+  // temporary fix this fix can be cleaned up by using dbus instead of using the
+  // tde-client
+  std::ostringstream stringStream;
+  stringStream << "tde-client 'return awful.screen.focused().tags[";
+  stringStream << toDesktop;
+  stringStream << "]:view_only()'";
+  system(stringStream.str().c_str());
 }
 
 int X11::destinationDesktop(int currentDesktop, int totalDesktops,
