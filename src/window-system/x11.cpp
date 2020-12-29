@@ -590,7 +590,7 @@ void X11::changeDesktop(ActionDirection direction) const {
   // TODO: unless upstream awesomeWM supports _NET_CURRENT_DESKTOP we use this
   // temporary fix this fix can be cleaned up by using dbus instead of using the
   // tde-client
-  std::ostringstream stringStream;
+  std::ostringstream stringStream = std::ostringstream();
   stringStream << "tde-client 'return awful.screen.focused().tags[";
   stringStream << toDesktop;
   stringStream << "]:view_only()'";
