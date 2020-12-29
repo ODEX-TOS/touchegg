@@ -593,7 +593,8 @@ void X11::changeDesktop(ActionDirection direction) const {
   // tde-client
   std::ostringstream stringStream;
   stringStream << "tde-client 'return awful.screen.focused().tags[";
-  stringStream << toDesktop;
+  // lua lists are 1 based while _NET_CURRENT_DESKTOP is 0 based
+  stringStream << toDesktop + 1;
   stringStream << "]:view_only()'";
   system(stringStream.str().c_str());
 }
