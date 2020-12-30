@@ -391,8 +391,8 @@ void X11::tileWindow(const WindowT &window, bool toTheLeft) const {
       << " + (axis and awful.placement['maximize_vertically'] or nil)\n";
   stringStream << "if client.focus.floating then\n";
   stringStream << "\ttouchegg_floating(client.focus, {honor_workarea=true, "
-                  "to_percent = 0.5})\n" stringStream
-               << "else";
+                  "to_percent = 0.5})\n";
+  stringStream << "else";
   stringStream << "\t_G.collision._focus.global_bydirection(";
   stringStream << (toTheLeft ? "'left'" : "'right'");
   stringStream << ", client.focus, true)\n";
