@@ -383,11 +383,11 @@ void X11::tileWindow(const WindowT &window, bool toTheLeft) const {
   std::ostringstream stringStream;
 
   stringStream << "tde-client \"_G.collision._focus.global_bydirection(";
-  stringStream << toTheLeft ? "'left'" : "'right'";
+  stringStream << (toTheLeft ? "'left'" : "'right'");
   stringStream << ", client.focus, true)\n";
   stringStream << "_G.collision._focus._quit()\"";
 
-  std::cout << "Tiling to the: " << toTheLeft ? "left" : "right" << std::endl;
+  std::cout << "Tiling to the: " << (toTheLeft ? "left" : "right") << std::endl;
 
   system(stringStream.str().c_str());
 }
