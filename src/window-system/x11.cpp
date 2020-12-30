@@ -397,7 +397,8 @@ void X11::tileWindow(const WindowT &window, bool toTheLeft) const {
   stringStream << (toTheLeft ? "'left'" : "'right'");
   stringStream << ", client.focus, true)\n";
   stringStream << "\t_G.collision._focus._quit()";
-  stringStream << "end" stringStream << "\"";
+  stringStream << "end";
+  stringStream << "\"";
 
   std::cout << "Tiling to the: " << (toTheLeft ? "left" : "right") << std::endl;
 
