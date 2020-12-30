@@ -382,10 +382,22 @@ void X11::tileWindow(const WindowT &window, bool toTheLeft) const {
   // using the tde-client
   std::ostringstream stringStream;
 
-  stringStream << "tde-client \"_G.collision._focus.global_bydirection(";
+  // function for tiling floating windows
+  stringStream << "tde-client \"";
+  stringStream
+      << "touchegg_floating = awful.placement.scale + awful.placement.";
+  stringStream << (toTheLeft ? "left" : "right");
+  stringStream
+      << " + (axis and awful.placement['maximize_vertically'] or nil)\n";
+  stringStream << "if client.focus.floating then\n";
+  stringStream << "\ttouchegg_floating(client.focus, {honor_workarea=true, "
+                  "to_percent = 0.5})\n" stringStream
+               << "else";
+  stringStream << "\t_G.collision._focus.global_bydirection(";
   stringStream << (toTheLeft ? "'left'" : "'right'");
   stringStream << ", client.focus, true)\n";
-  stringStream << "_G.collision._focus._quit()\"";
+  stringStream << "\t_G.collision._focus._quit()";
+  stringStream << "end" stringStream << "\"";
 
   std::cout << "Tiling to the: " << (toTheLeft ? "left" : "right") << std::endl;
 
