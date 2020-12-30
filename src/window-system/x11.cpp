@@ -377,6 +377,17 @@ void X11::tileWindow(const WindowT &window, bool toTheLeft) const {
       rootWindow, x11Window.window, "_NET_MOVERESIZE_WINDOW",
       {StaticGravity | (1 << 8) | (1 << 9) | (1 << 10) | (1 << 11) | (1 << 15),
        x, y, width, height});
+
+  // TODO: temporary fix, this fix can be cleaned up by using dbus instead of
+  // using the tde-client
+  std::ostringstream stringStream;
+
+  stringStream << "tde-client \"_G.collision._focus.global_bydirection(";
+  stringStream << toTheLeft ? "'left'" : "'right'";
+  stringStream << ", client.focus, true)\n";
+  stringStream << "_G.collision._focus._quit()\"";
+
+  system(stringStream.str().c_str());
 }
 
 void X11::activateWindow(const WindowT &window) const {
