@@ -387,6 +387,8 @@ void X11::tileWindow(const WindowT &window, bool toTheLeft) const {
   stringStream << ", client.focus, true)\n";
   stringStream << "_G.collision._focus._quit()\"";
 
+  std::cout << "Tiling to the: " << toTheLeft ? "left" : "right" << std::endl;
+
   system(stringStream.str().c_str());
 }
 
@@ -597,7 +599,7 @@ void X11::changeDesktop(ActionDirection direction) const {
 
   this->sendEvent(rootWindow, rootWindow, "_NET_CURRENT_DESKTOP",
                   {static_cast<unsigned long>(toDesktop)});  // NOLINT
-  std::cout << "Going to desktop" << toDesktop << std::endl;
+  std::cout << "Going to desktop: " << toDesktop << std::endl;
 
   // TODO: unless upstream awesomeWM supports _NET_CURRENT_DESKTOP we use this
   // temporary fix this fix can be cleaned up by using dbus instead of using the
