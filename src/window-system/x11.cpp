@@ -387,8 +387,7 @@ void X11::tileWindow(const WindowT &window, bool toTheLeft) const {
   stringStream
       << "touchegg_floating = awful.placement.scale + awful.placement.";
   stringStream << (toTheLeft ? "left" : "right");
-  stringStream
-      << " + (axis and awful.placement['maximize_vertically'] or nil)\n";
+  stringStream << " + awful.placement['maximize_vertically']\n";
   stringStream << "if #awful.screen.focused().tiled_clients == 1 then\n";
   stringStream << "\tclient.focus.floating = true\n";
   stringStream << "end\n";
