@@ -389,18 +389,18 @@ void X11::tileWindow(const WindowT &window, bool toTheLeft) const {
   stringStream << (toTheLeft ? "left" : "right");
   stringStream
       << " + (axis and awful.placement['maximize_vertically'] or nil)\n";
-  stringStream << "if #awful.screen.focused().tiled_clients == 1 then";
-  stringStream << "\tclient.focus.floating = true";
-  stringStream << "end";
+  stringStream << "if #awful.screen.focused().tiled_clients == 1 then\n";
+  stringStream << "\tclient.focus.floating = true\n";
+  stringStream << "end\n";
   stringStream << "if client.focus.floating then\n";
   stringStream << "\ttouchegg_floating(client.focus, {honor_workarea=true, "
                   "to_percent = 0.5})\n";
-  stringStream << "else";
+  stringStream << "else\n";
   stringStream << "\t_G.collision._focus.global_bydirection(";
   stringStream << (toTheLeft ? "'left'" : "'right'");
   stringStream << ", client.focus, true)\n";
-  stringStream << "\t_G.collision._focus._quit()";
-  stringStream << "end";
+  stringStream << "\t_G.collision._focus._quit()\n";
+  stringStream << "end\n";
   stringStream << "\"";
 
   std::cout << "Tiling to the: " << (toTheLeft ? "left" : "right") << std::endl;
