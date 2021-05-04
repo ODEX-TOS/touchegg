@@ -583,6 +583,9 @@ void X11::changeDesktop(ActionDirection direction) const {
   std::vector<unsigned long> current = this->getWindowProperty<unsigned long>(
       rootWindow, "_NET_CURRENT_DESKTOP", XA_CARDINAL);
 
+  std::cout << "total size: " << total.size() << std::endl;
+  std::cout << "current size: " << current.size() << std::endl;
+
   if (total.size() != 1 || current.size() != 1) {
     return;
   }
@@ -609,6 +612,7 @@ void X11::changeDesktop(ActionDirection direction) const {
   }
 
   if (toDesktop < 0) {
+    std::cout << "returning: " << total.size() << std::endl;
     return;
   }
 
