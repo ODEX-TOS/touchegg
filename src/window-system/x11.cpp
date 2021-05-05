@@ -620,7 +620,7 @@ void X11::changeDesktop(ActionDirection direction) const {
   // temporary fix this fix can be cleaned up by using dbus instead of using the
   // tde-client
   std::ostringstream stringStream;
-  stringStream << "tde-client 'return awful.screen.focused().tags[";
+  stringStream << "tde-client 'return mouse.screen.tags[";
   // lua lists are 1 based while _NET_CURRENT_DESKTOP is 0 based
   stringStream << toDesktop + 1;
   stringStream << "]:view_only()'";
