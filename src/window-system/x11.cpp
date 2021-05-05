@@ -609,7 +609,7 @@ void X11::changeDesktop(ActionDirection direction) const {
   }
 
   if (toDesktop < 0) {
-\    return;
+    return;
   }
 
   this->sendEvent(rootWindow, rootWindow, "_NET_CURRENT_DESKTOP",
