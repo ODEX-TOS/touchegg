@@ -51,5 +51,5 @@ double Animation::eerp(double initialValue, double targetValue,
                         double percentage, double power) {
   double new_percentage = pow(percentage, power) / pow(percentage, power - 1);
 
-  return Animation::lerp(initialValue, targetValue, percentage);
+  return Animation::lerp(initialValue, targetValue, new_percentage);
 }
