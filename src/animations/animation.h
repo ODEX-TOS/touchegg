@@ -72,6 +72,32 @@ class Animation {
   static double value(double initialValue, double targetValue,
                       double percentage);
 
+
+   /**
+   * Utility method to calculate the current animation value based on the
+   * percentage of the gesture performed (Linear Interpolation).
+   * Animations are always linear, as they are 1:1 to the user's movement.
+   * @param initialValue Animation start value.
+   * @param targetValue Animation end value.
+   * @param percentage Current animation percentage.
+   * @returns The linear animation value at the specified percentage.
+   */
+  static double lerp(double initialValue, double targetValue,
+                      double percentage);
+
+   /**
+   * Utility method to calculate the current animation value based on the
+   * percentage of the gesture performed (Exponential Interpolation).
+   * Animations are always linear, as they are 1:1 to the user's movement.
+   * @param initialValue Animation start value.
+   * @param targetValue Animation end value.
+   * @param percentage Current animation percentage.
+   * @param power The exponent to use in the interpolation.
+   * @returns The linear animation value at the specified percentage.
+   */
+  static double eerp(double initialValue, double targetValue,
+                      double percentage, double power = 2);
+
  private:
   uint64_t lastRenderTimestamp = 0;
 };

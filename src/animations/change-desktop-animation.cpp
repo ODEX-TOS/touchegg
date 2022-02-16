@@ -99,7 +99,7 @@ void ChangeDesktopAnimation::render(double percentage) {
   double y5 = -arrowHeadLength * std::sin(this->angle + arrowHeadAngle);
 
   cairo_set_line_width(ctx, (radius / 10));
-  cairo_set_source_rgba(ctx, 1.0, 1.0, 1.0, 1.0);
+  cairo_set_source_rgba(ctx, 1.0, 1.0, 1.0, Animation::eerp(0, 1, percentage, 4));
   cairo_move_to(ctx, x1, y1);
   cairo_rel_line_to(ctx, x2, y2);
   cairo_rel_move_to(ctx, x3, y3);

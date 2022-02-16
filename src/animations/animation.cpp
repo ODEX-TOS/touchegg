@@ -18,6 +18,7 @@
 #include "animations/animation.h"
 
 #include <chrono>  // NOLINT
+#include <cmath>
 
 void Animation::onUpdate(double percentage) {
   constexpr uint64_t frameRate = (1000 / 30);
@@ -39,4 +40,16 @@ void Animation::onUpdate(double percentage) {
 double Animation::value(double initialValue, double targetValue,
                         double percentage) {
   return (((targetValue - initialValue) * percentage) / 100) + initialValue;
+}
+
+double Animation::lerp(double initialValue, double targetValue,
+                        double percentage) {
+  return Animation::value(initialValue, targetValue, percentage);
+}
+
+double Animation::eerp(double initialValue, double targetValue,
+                        double percentage, double power) {
+  double new_percentage = pow(percentage, power) / pow(percentage, power - 1);
+
+  return Animation::lerp(initialValue, targetValue, percentage);
 }
