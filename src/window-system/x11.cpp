@@ -32,6 +32,7 @@
 #include <sstream>
 #include <stdexcept>
 #include <vector>
+#include <string.h>
 
 #include "window-system/x11-cairo-surface.h"
 
@@ -179,6 +180,37 @@ std::vector<T> X11::getWindowProperty(Window window,
   } while (status == Success && bytesAfterReturn != 0 && numItems != 0);
 
   return propertiesVector;
+}
+
+const std::string X11::getWindowProperty_str(Window window,
+                                      const std::string &atomName) const {
+  Atom atom = XInternAtom(this->display, atomName.c_str(), True);
+  if (atom == None) {
+    return "";
+  }
+
+  long offset = 0;        // NOLINT
+  long offsetSize = 100;  // NOLINT
+  Atom atomRet = None;
+  int size = 0;
+  unsigned long numItems = 0;          // NOLINT
+  unsigned long bytesAfterReturn = 0;  // NOLINT
+  unsigned char *ret = nullptr;
+  std::stringstream result;
+
+  int status = 0;
+
+  do {
+    status = XGetWindowProperty(this->display, window, atom, offset, offsetSize,
+                                False, XA_STRING, &atomRet, &size, &numItems,
+                                &bytesAfterReturn, &ret);
+    if (status == Success) {
+      result << ret;
+      XFree(ret);
+    }
+  } while (status == Success && bytesAfterReturn != 0 && numItems != 0);
+
+  return result.str();
 }
 
 void X11::sendEvent(Window targetWindow, Window eventWidow,
@@ -417,33 +449,36 @@ void X11::tileWindow(const WindowT &window, bool toTheLeft) const {
       {StaticGravity | (1 << 8) | (1 << 9) | (1 << 10) | (1 << 11) | (1 << 15),
        x, y, width, height});
 
-  // TODO: temporary fix, this fix can be cleaned up by using dbus instead of
-  // using the tde-client
-  std::ostringstream stringStream;
-
-  // function for tiling floating windows
-  stringStream << "tde-client \"";
-  stringStream
-      << "touchegg_floating = awful.placement.scale + awful.placement.";
-  stringStream << (toTheLeft ? "left" : "right");
-  stringStream << " + awful.placement['maximize_vertically']\n";
-  stringStream << "if #awful.screen.focused().tiled_clients == 1 then\n";
-  stringStream << "\tclient.focus.floating = true\n";
-  stringStream << "end\n";
-  stringStream << "if client.focus.floating then\n";
-  stringStream << "\ttouchegg_floating(client.focus, {honor_workarea=true, "
-                  "to_percent = 0.5})\n";
-  stringStream << "else\n";
-  stringStream << "\t_G.collision._focus.global_bydirection(";
-  stringStream << (toTheLeft ? "'left'" : "'right'");
-  stringStream << ", client.focus, true)\n";
-  stringStream << "\t_G.collision._focus._quit()\n";
-  stringStream << "end\n";
-  stringStream << "\"";
-
   std::cout << "Tiling to the: " << (toTheLeft ? "left" : "right") << std::endl;
 
-  system(stringStream.str().c_str());
+
+  if (this->isTDE()){
+    // TODO: temporary fix, this fix can be cleaned up by using dbus instead of
+    // using the tde-client
+    std::ostringstream stringStream;
+
+    // function for tiling floating windows
+    stringStream << "tde-client \"";
+    stringStream
+        << "touchegg_floating = awful.placement.scale + awful.placement.";
+    stringStream << (toTheLeft ? "left" : "right");
+    stringStream << " + awful.placement['maximize_vertically']\n";
+    stringStream << "if #awful.screen.focused().tiled_clients == 1 then\n";
+    stringStream << "\tclient.focus.floating = true\n";
+    stringStream << "end\n";
+    stringStream << "if client.focus.floating then\n";
+    stringStream << "\ttouchegg_floating(client.focus, {honor_workarea=true, "
+                    "to_percent = 0.5})\n";
+    stringStream << "else\n";
+    stringStream << "\trequire('collision')._focus.global_bydirection(";
+    stringStream << (toTheLeft ? "'left'" : "'right'");
+    stringStream << ", client.focus, true)\n";
+    stringStream << "\trequire('collision')._focus._quit()\n";
+    stringStream << "end\n";
+    stringStream << "\"";
+
+    system(stringStream.str().c_str());
+  }
 }
 
 void X11::activateWindow(const WindowT &window) const {
@@ -636,7 +671,7 @@ void X11::changeDesktop(ActionDirection direction, bool cyclic) const {
   if (current.size() != 1) {
     return;
   }
-  int currentDesktop = current.front();
+  int currentDesktop = current.front()  % totalDesktops;
 
   int toDesktop = -1;
   switch (direction) {
@@ -653,10 +688,9 @@ void X11::changeDesktop(ActionDirection direction, bool cyclic) const {
       break;
     case ActionDirection::PREVIOUS:
     default:
-      int prev = currentDesktop - 1;
       toDesktop = cyclic
-                      ? (prev % totalDesktops + totalDesktops) % totalDesktops
-                      : std::max(0, prev);
+                      ? ((currentDesktop - 1 % totalDesktops) + totalDesktops) % totalDesktops
+                      : std::max(0, currentDesktop - 1);
       break;
   }
 
@@ -666,17 +700,22 @@ void X11::changeDesktop(ActionDirection direction, bool cyclic) const {
 
   this->sendEvent(rootWindow, rootWindow, "_NET_CURRENT_DESKTOP",
                   {static_cast<unsigned long>(toDesktop)});  // NOLINT
-  std::cout << "Going to desktop: " << toDesktop << std::endl;
 
-  // TODO: unless upstream awesomeWM supports _NET_CURRENT_DESKTOP we use this
-  // temporary fix this fix can be cleaned up by using dbus instead of using the
-  // tde-client
-  std::ostringstream stringStream;
-  stringStream << "tde-client 'return mouse.screen.tags[";
-  // lua lists are 1 based while _NET_CURRENT_DESKTOP is 0 based
-  stringStream << toDesktop + 1;
-  stringStream << "]:view_only()'";
-  system(stringStream.str().c_str());
+
+  if (this->isTDE()){
+    // TODO: unless upstream awesomeWM supports _NET_CURRENT_DESKTOP we use this
+    // temporary fix this fix can be cleaned up by using dbus instead of using the
+    // tde-client
+    std::ostringstream stringStream;
+    stringStream << "tde-client 'return mouse.screen.tags[";
+    // lua lists are 1 based while _NET_CURRENT_DESKTOP is 0 based
+    stringStream << toDesktop + 1;
+    stringStream << "]:view_only()'";
+    system(stringStream.str().c_str());
+    return;
+  }
+
+
 }
 
 int X11::destinationDesktop(int currentDesktop, int totalDesktops,
@@ -742,6 +781,20 @@ bool X11::isShowingDesktop() const {
   }
 
   return (showingDesktop.at(0) != 0);
+}
+
+bool X11::isTDE() const {
+  Window root = XDefaultRootWindow(this->display);
+  std::vector<Window> wmWindow = this->getWindowProperty<Window>(
+      XDefaultRootWindow(this->display), "_NET_SUPPORTING_WM_CHECK", XA_WINDOW);
+  
+  // This is most definetly not a TDE instance since we support _NET_SUPPORTING_WM_CHECK EWHM property
+  if(wmWindow.size() != 1) 
+    return false;
+
+  std::string wm_name = this->getWindowProperty_str( wmWindow.front(), "WM_CLASS");
+
+  return strcmp(wm_name.c_str(), "TDE") == 0;
 }
 
 Rectangle X11::getWindowDecorationSize(Window window) const {

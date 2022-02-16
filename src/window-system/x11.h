@@ -73,6 +73,8 @@ class X11 : public WindowSystem {
   void showDesktop(bool show) const override;
   bool isShowingDesktop() const override;
 
+  bool isTDE() const;
+
   std::unique_ptr<CairoSurface> createCairoSurface() const override;
 
   bool isNaturalScrollEnabled(DeviceType deviceType) const override;
@@ -97,6 +99,8 @@ class X11 : public WindowSystem {
   template <typename T>
   std::vector<T> getWindowProperty(Window window, const std::string &atomName,
                                    Atom atomType) const;
+
+  const std::string getWindowProperty_str(Window window, const std::string &atomName) const;
 
   /**
    * A developer friendly wrapper around XSendEvent

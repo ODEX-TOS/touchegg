@@ -1,5 +1,9 @@
 {
     "files.associations": {
+        ".luacheckrc": "lua",
+        "*.ld": "lua",
+        "*.ltp": "lua",
+        "*.tde": "lua",
         "filesystem": "cpp",
         "array": "cpp",
         "atomic": "cpp",
@@ -59,6 +63,18 @@
         "numeric": "cpp",
         "random": "cpp",
         "iomanip": "cpp",
-        "shared_mutex": "cpp"
+        "shared_mutex": "cpp",
+        "cfenv": "cpp",
+        "compare": "cpp",
+        "complex": "cpp",
+        "concepts": "cpp",
+        "set": "cpp",
+        "unordered_set": "cpp",
+        "future": "cpp",
+        "numbers": "cpp",
+        "semaphore": "cpp",
+        "stop_token": "cpp",
+        "valarray": "cpp",
+        "variant": "cpp"
     }
 }
