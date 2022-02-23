@@ -190,6 +190,8 @@ class WindowSystem {
   virtual GestureDirection calculateRotation(
       GestureType gestureType, DeviceType deviceType,
       GestureDirection direction) const = 0;
+
+  virtual bool isTDE() const = 0;
 };
 
 #endif  // WINDOW_SYSTEM_WINDOW_SYSTEM_H_

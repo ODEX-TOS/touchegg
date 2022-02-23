@@ -38,6 +38,8 @@ class ChangeDesktopAnimation : public Animation {
   Color color;
   Color borderColor;
   double angle;
+
+  ActionDirection m_last_direction;
 };
 
 #endif  // ANIMATIONS_CHANGE_DESKTOP_ANIMATION_H_

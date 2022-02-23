@@ -70,5 +70,9 @@ void AnimatedAction::onGestureUpdate(const Gesture &gesture) {
 void AnimatedAction::onGestureEnd(const Gesture &gesture) {
   if (!this->animate || gesture.percentage() >= this->threshold) {
     this->executeAction(gesture);
+  }else if (gesture.percentage() < this->threshold)
+  {
+    this->onAbortGesture(gesture);
   }
+  
 }

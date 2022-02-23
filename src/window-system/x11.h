@@ -73,7 +73,7 @@ class X11 : public WindowSystem {
   void showDesktop(bool show) const override;
   bool isShowingDesktop() const override;
 
-  bool isTDE() const;
+  bool isTDE() const override;
 
   std::unique_ptr<CairoSurface> createCairoSurface() const override;
 

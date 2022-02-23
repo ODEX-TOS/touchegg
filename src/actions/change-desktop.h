@@ -31,6 +31,8 @@ class ChangeDesktop : public AnimatedAction {
   bool runOnSystemWindows() override { return true; }
   void onGestureBegin(const Gesture &gesture) override;
   void executeAction(const Gesture &gesture) override;
+  void onAbortGesture(const Gesture &gesture) override;
+
 
  private:
   ActionDirection direction = ActionDirection::AUTO;

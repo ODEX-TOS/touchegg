@@ -20,6 +20,9 @@
 #include <algorithm>
 #include <cmath>
 #include <iostream>
+#include <string>
+#include <sstream>
+
 
 ChangeDesktopAnimation::ChangeDesktopAnimation(
     const WindowSystem &windowSystem, const WindowT &window, Color color,
@@ -28,6 +31,7 @@ ChangeDesktopAnimation::ChangeDesktopAnimation(
   Rectangle workarea = this->windowSystem.getDesktopWorkarea();
   maxSize.height = (workarea.height / 7);
   maxSize.width = maxSize.height;
+  m_last_direction = animationPosition;
 
   switch (animationPosition) {
     case ActionDirection::UP:
@@ -54,6 +58,24 @@ ChangeDesktopAnimation::ChangeDesktopAnimation(
 }
 
 void ChangeDesktopAnimation::render(double percentage) {
+
+  if (this->windowSystem.isTDE()) {
+    std::ostringstream stringStream;
+
+    stringStream << "tde-client \"";
+    stringStream << "tde.emit_signal('mouse::swipe_event::";
+    stringStream << (this->m_last_direction == ActionDirection::LEFT ? "previous" : "next");
+    stringStream << "',";
+    stringStream << percentage << ")";
+    stringStream << "\"";
+
+    std::cout << stringStream.str().c_str() << std::endl;
+
+    system(stringStream.str().c_str());
+    return;
+  }
+  
+
   cairo_t *ctx = this->cairoSurface->getContext();
 
   // Clear the background

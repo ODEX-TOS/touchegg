@@ -74,6 +74,12 @@ void ChangeDesktop::executeAction(const Gesture& gesture) {
   this->windowSystem.changeDesktop(actionDirection, this->cyclic);
 }
 
+void ChangeDesktop::onAbortGesture(const Gesture &gesture) {
+  // Make sure the animation get's reset properly
+  if(this->windowSystem.isTDE())
+    system("tde-client 'tde.emit_signal(\"mouse::swipe_event::previous\", 0)'");
+}
+
 ActionDirection ChangeDesktop::getAnimationAutoDirection(
     const Gesture& gesture) const {
   bool natural = this->windowSystem.isNaturalScrollEnabled(

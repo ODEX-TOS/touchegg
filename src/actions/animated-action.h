@@ -56,6 +56,7 @@ class AnimatedAction : public Action {
    */
   void onGestureEnd(const Gesture &gesture) override;
   virtual void executeAction(const Gesture &gesture) = 0;
+  virtual void onAbortGesture(const Gesture &gesture) {};
 
  protected:
   /**
