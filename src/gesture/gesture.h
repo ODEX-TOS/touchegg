@@ -21,6 +21,7 @@
 #include "gesture/device-type.h"
 #include "gesture/gesture-direction.h"
 #include "gesture/gesture-type.h"
+#include <cstdint>
 
 /**
  * Gestures implementations change depending on the driver/backend. This is the
